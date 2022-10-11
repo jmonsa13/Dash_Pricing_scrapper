@@ -1,23 +1,14 @@
 # Project Pricing Mansfield
-# data load and transformation
+# Data load and transformation
 # ----------------------------------------------------------------------------------------------------------------------
 # Library
 # ----------------------------------------------------------------------------------------------------------------------
 import os
-
+import numpy as np
 import pandas as pd
-
-
 # ----------------------------------------------------------------------------------------------------------------------
 # Function Definition
 # ----------------------------------------------------------------------------------------------------------------------
-def load_data(filename):
-    """
-    Función que carga el archivo csv guardado al conectar con la base de datos y devuelve un dataframe
-    """
-    df = pd.read_csv(filename)
-
-    return df
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -39,10 +30,13 @@ df = pd.DataFrame()
 
 # Loading the DF of each month in a unique DF
 for file in files_list:
-    df = pd.concat([df, load_data(filename=file)])
+    df = pd.concat([df, pd.read_csv(file)])
 
 # Dropping duplicates in case the robot take two values by day
 df.drop_duplicates(inplace=True)
+
+# Cleaning the product name for empty trilling space
+df['Producto'] = df['Producto'].apply(lambda x: x.strip())
 
 # Creating a new product name combining the product name + sku
 df['Producto_sku'] = ['_'.join(i) for i in zip(df['Producto'], df['SKU'].map(str))]
@@ -50,19 +44,29 @@ df['Producto_sku'] = ['_'.join(i) for i in zip(df['Producto'], df['SKU'].map(str
 # String the SKU
 df['SKU_str'] = df['SKU'].map(str)
 
-# ----------------------------------------------------------------------------------------------------------------------
-# Master database
-# ----------------------------------------------------------------------------------------------------------------------
-# Loading the Master Database
-# Reading files with the directory for comparisons
-comp_df = pd.read_excel('./data/Productos Mansfield.xlsx')
+# Calculating the wholesaler price
+df['Precio_wholesaler'] = np.round(df['Precio_Lista'] * df['Multiplicador'], 2)
 
-# Organizing the SKU
+# ----------------------------------------------------------------------------------------------------------------------
+# Master database Competitors
+# ----------------------------------------------------------------------------------------------------------------------
+# Reading files for competitors
+comp_df = pd.read_excel('./data/Wholesaler_Database.xlsx', sheet_name='Competitors')
+
+# Organizing the SKU homologo
 comp_df['Homologo'] = comp_df['Homologo Mansfield'].map(str)
 comp_df['Homologo'] = comp_df['Homologo'].apply(lambda x: x.strip())
 
-# Mansfield df Summary products
-sku_list_mansfield = ['130010007', '135010007', '137210040', '160010007', '384010000', '386010000']
+# String the SKU
+comp_df['Sku'] = comp_df['Sku'].map(str)
+comp_df['Sku'] = comp_df['Sku'].apply(lambda x: x.strip())
 
-Mansfield_df = df[df["Fabricante"] == 'Mansfield']
-Mansfield_df = Mansfield_df[Mansfield_df['SKU_str'].isin(sku_list_mansfield)]
+# ----------------------------------------------------------------------------------------------------------------------
+# Master database Mansfield
+# ----------------------------------------------------------------------------------------------------------------------
+# Reading files for mansfield
+mansfield_df = pd.read_excel('./data/Wholesaler_Database.xlsx', sheet_name='Mansfield')
+
+# Organizing the SKU
+mansfield_df['Sku'] = mansfield_df['Sku'].map(str)
+mansfield_df['Sku'] = mansfield_df['Sku'].apply(lambda x: x.strip())

@@ -7,8 +7,7 @@ from dash import Dash, html
 import dash_labs as dl
 import dash_bootstrap_components as dbc
 
-from components.data_component import df, comp_df, Mansfield_df
-
+from components.data_component import df, comp_df, mansfield_df
 from callbacks_wholesaler import wholesaler_callbacks
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -39,7 +38,6 @@ navbar = dbc.Nav(
             nav=True,
             label="Consumer Price",
         ),
-        dbc.NavItem(dbc.NavLink("About Us", href="/us")),
     ], pills=True, horizontal='end',
 )
 # ----------------------------------------------------------------------------------------------------------------------
@@ -89,8 +87,7 @@ app.layout = dbc.Container(
 # Callback
 # ----------------------------------------------------------------------------------------------------------------------
 # Wholesaler callback
-wholesaler_callbacks(app, df, comp_df, Mansfield_df)
-
+wholesaler_callbacks(app, df, comp_df, mansfield_df)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Running the main code
