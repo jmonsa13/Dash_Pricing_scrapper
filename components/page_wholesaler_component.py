@@ -113,7 +113,7 @@ def wholesaler_price_index_layout():
                 dbc.Row(
                     [
                         html.Div(
-                            html.H4(id='hover_selection')
+                            html.H4(children='Price Index Evolution', id='hover_selection_detail')
                         ),
                     ]
                 ),
