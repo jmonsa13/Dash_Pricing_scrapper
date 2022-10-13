@@ -30,7 +30,7 @@ def price_index_calculation(df_comp, df_mansfield):
         price_wholesaler_mansfield = df_mansfield_single.iloc[0]['Precio_wholesaler']
 
         # Math equation for the price index in %
-        price_index_value = np.round(((price_wholesaler_mansfield / row['Precio_wholesaler']) * 100), 2)
+        price_index_value = np.round(((row['Precio_wholesaler'] / price_wholesaler_mansfield) * 100), 2)
         price_index.append(price_index_value)
 
     return price_index
